@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base: '/brain-battle/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/brain-battle/' : '/',
   plugins: [
     react(),
     svgr({
@@ -37,4 +37,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))

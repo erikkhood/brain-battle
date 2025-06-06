@@ -151,7 +151,7 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
           preload="metadata"
           controls={false}
         >
-          <source src="./intro-video.mp4" type="video/mp4" />
+          <source src="/intro-video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 

@@ -6,11 +6,12 @@ import GameMenu from './components/GameMenu';
 import TrickyTechBoard from './components/TrickyTechBoard';
 import VideoIntro from './components/VideoIntro';
 
+
 type GameMode = 'classic' | 'tricky-tech' | 'ultimate' | null;
 
 const App: React.FC = () => {
   const [selectedMode, setSelectedMode] = useState<GameMode>(null);
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   const handleSelectMode = (mode: 'classic' | 'tricky-tech' | 'ultimate') => {
     setSelectedMode(mode);
@@ -36,6 +37,8 @@ const App: React.FC = () => {
   if (showIntro) {
     return <VideoIntro onVideoEnd={handleIntroEnd} onSkip={handleSkipIntro} />;
   }
+
+
 
   return (
     <DndProvider backend={HTML5Backend}>
