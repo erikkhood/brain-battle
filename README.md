@@ -1,3 +1,3 @@
 # Brain Battle
 
-🧠⚔️ Fully Deployed and Working!
+🧠⚔️ Fully Deployed and Working! - UX Improvements
