@@ -1,3 +1,3 @@
 # Brain Battle
 
-🧠⚔️ GitHub Pages Deployment Ready
+🧠⚔️ GitHub Pages Deployment Ready - Fixed Permissions
