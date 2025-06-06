@@ -43,11 +43,15 @@ const CardComponent: React.FC<CardProps> = ({
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: card.type,
-    item: () => ({
-      ...card,
-      isInBattle: isInBattle,
-      isFirstTurn: isFirstTurn
-    }),
+    item: () => {
+      // Play sound when drag starts
+      soundManager.play('cardMove');
+      return {
+        ...card,
+        isInBattle: isInBattle,
+        isFirstTurn: isFirstTurn
+      };
+    },
     canDrag: () => {
       if (!isDraggable) return false;
       if (isInBattle) return false;
@@ -56,9 +60,6 @@ const CardComponent: React.FC<CardProps> = ({
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-    begin: () => {
-      soundManager.play('cardMove');
-    },
   }), [card, isDraggable, isInBattle, isFirstTurn]);
 
   const handleClick = () => {
