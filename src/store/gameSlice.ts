@@ -578,7 +578,6 @@ const gameSlice = createSlice({
         } else {
           // No shield or not a Thinking Trap - apply normal damage
           const impact = cardInState.type === 'thinking-trap' ? -damage : damage;
-          const previousHealth = state.brainHealth;
           state.brainHealth = Math.max(-100, Math.min(100, state.brainHealth + impact));
           
           // Play sound effect based on health change
