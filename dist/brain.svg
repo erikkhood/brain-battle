@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .brain { fill: #6366f1; }
+      .accent { fill: #4f46e5; }
+    </style>
+  </defs>
+  
+  <!-- Main brain shape -->
+  <path class="brain" d="M25 35 C15 35, 10 45, 15 55 C10 65, 20 75, 35 75 L65 75 C80 75, 90 65, 85 55 C90 45, 85 35, 75 35 C70 25, 60 20, 50 20 C40 20, 30 25, 25 35 Z"/>
+  
+  <!-- Brain wrinkles/detail -->
+  <path class="accent" d="M30 40 Q40 35, 45 40 T60 40"/>
+  <path class="accent" d="M35 50 Q45 45, 50 50 T65 50"/>
+  <path class="accent" d="M40 60 Q50 55, 55 60"/>
+  
+  <!-- Central division -->
+  <path class="accent" d="M50 25 L50 70" stroke="#4f46e5" stroke-width="2" fill="none"/>
+</svg> 
