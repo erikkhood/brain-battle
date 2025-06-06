@@ -58,9 +58,15 @@ const CardComponent: React.FC<CardProps> = ({
   }), [card, isDraggable, isInBattle, isFirstTurn]);
 
   const handleClick = () => {
-    if (isTargetable && onSelectTarget && !isTrickyTechCard(card)) {
-      // Only call onSelectTarget for classic cards
-      onSelectTarget(card as ClassicCard);
+    if (isTargetable && onSelectTarget) {
+      // Call onSelectTarget for both classic and tricky tech cards
+      if (isTrickyTechCard(card)) {
+        // For TrickyTech cards, we need to cast properly
+        onSelectTarget(card as any);
+      } else {
+        // For classic cards
+        onSelectTarget(card as ClassicCard);
+      }
     } else if (onClick) {
       onClick();
     }
