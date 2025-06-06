@@ -15,10 +15,6 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
   const [loadingFailed, setLoadingFailed] = useState(false);
 
   useEffect(() => {
-    console.log('VideoIntro component loaded');
-    console.log('BASE_URL:', import.meta.env.BASE_URL);
-    console.log('Video path will be:', `${import.meta.env.BASE_URL}intro-video.mp4`);
-    
     // Allow skipping after 3 seconds
     const skipTimer = setTimeout(() => {
       setCanSkip(true);
@@ -73,8 +69,6 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
 
   const handleVideoError = (error: any) => {
     console.log('Video failed to load:', error);
-    console.log('Video source path:', `${import.meta.env.BASE_URL}intro-video.mp4`);
-    console.log('BASE_URL:', import.meta.env.BASE_URL);
     setHasVideoLoaded(false);
     setLoadingFailed(true);
     // Auto-skip after error
