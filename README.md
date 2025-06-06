@@ -1,2 +1,3 @@
-# brain-battle
+# Brain Battle
 
+🧠⚔️ GitHub Pages Deployment Ready
