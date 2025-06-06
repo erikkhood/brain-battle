@@ -1,3 +1,3 @@
 # Brain Battle
 
-🧠⚔️ GitHub Pages Deployment Ready - Fixed Video Path
+🧠⚔️ GitHub Pages Deployment Ready - Debug Video Path
