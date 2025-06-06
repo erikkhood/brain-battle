@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { soundManager } from '../utils/soundManager'
 
 // Import card back image
 import cardBackImage from '../assets/cards/card-back.webp'
@@ -526,6 +527,7 @@ const gameSlice = createSlice({
         state.activeEffects.activeCardEffects = state.activeEffects.activeCardEffects.filter(
           effect => effect.type !== 'friend-support'
         );
+        soundManager.play('shield');
         return; // Exit early - attack is blocked
       }
 
@@ -576,19 +578,28 @@ const gameSlice = createSlice({
         } else {
           // No shield or not a Thinking Trap - apply normal damage
           const impact = cardInState.type === 'thinking-trap' ? -damage : damage;
+          const previousHealth = state.brainHealth;
           state.brainHealth = Math.max(-100, Math.min(100, state.brainHealth + impact));
           
-          // Move card to played cards if not already there
-          if (!state.playedCards.some(c => c.id === card.id)) {
-            state.playedCards.push({...cardInState});
-            
-            // Remove from team's hand
-            if (card.type === 'thinking-trap') {
-              state.trapperCards = state.trapperCards.filter(c => c.id !== card.id);
-            } else {
-              state.defenderCards = state.defenderCards.filter(c => c.id !== card.id);
-            }
+          // Play sound effect based on health change
+          if (impact > 0) {
+            soundManager.play('healthIncrease');
+          } else if (impact < 0) {
+            soundManager.play('healthDecrease');
           }
+          
+                      // Move card to played cards if not already there
+            if (!state.playedCards.some(c => c.id === card.id)) {
+              state.playedCards.push({...cardInState});
+              soundManager.play('cardPlace');
+              
+              // Remove from team's hand
+              if (card.type === 'thinking-trap') {
+                state.trapperCards = state.trapperCards.filter(c => c.id !== card.id);
+              } else {
+                state.defenderCards = state.defenderCards.filter(c => c.id !== card.id);
+              }
+            }
         }
       } else if (target === 'card' && targetCardId) {
         // For card-to-card attacks, check shield
@@ -599,6 +610,7 @@ const gameSlice = createSlice({
           state.activeEffects.activeCardEffects = state.activeEffects.activeCardEffects.filter(
             effect => effect.type !== 'friend-support'
           );
+          soundManager.play('shield');
         } else {
           // No shield or not a Thinking Trap - apply normal damage
           let targetCard = state.playedCards.find(c => c.id === targetCardId);
@@ -609,12 +621,14 @@ const gameSlice = createSlice({
 
           if (targetCard) {
             targetCard.hp -= Math.abs(damage);
+            soundManager.play('attack');
             
             if (targetCard.hp <= 0) {
               state.playedCards = state.playedCards.filter(c => c.id !== targetCardId);
               state.trapperCards = state.trapperCards.filter(c => c.id !== targetCardId);
               state.defenderCards = state.defenderCards.filter(c => c.id !== targetCardId);
               state.graveyardCards.push({...targetCard});
+              soundManager.play('cardGraveyard');
             }
           }
         }
@@ -628,6 +642,7 @@ const gameSlice = createSlice({
         // Check if card should go to graveyard
         if (card.hp <= 0) {
           state.graveyardCards.push({...card});
+          soundManager.play('cardGraveyard');
         } else {
           if (card.type === 'thinking-trap') {
             state.trapperCards.push({...card});
@@ -642,6 +657,7 @@ const gameSlice = createSlice({
 
       // Switch teams and update first turn flag
       state.currentTeam = state.currentTeam === 'thought-trappers' ? 'thought-defenders' : 'thought-trappers';
+      soundManager.play('turnSwitch');
       if (state.isFirstTurn) {
         state.isFirstTurn = false;
       }
@@ -651,6 +667,7 @@ const gameSlice = createSlice({
     },
     playActionCard: (state, action: PayloadAction<ActionCard>) => {
       const actionCard = action.payload;
+      soundManager.play('actionCard');
 
       // Only allow playing action cards for the correct team
       if (

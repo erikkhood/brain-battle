@@ -6,6 +6,7 @@ import { Card, ActionCard, playCard, playActionCard, updateTimer, resetGame, pro
 import CardComponent from './Card'
 import ActionCardMenu from './ActionCardMenu'
 import ActiveEffects from './ActiveEffects'
+import { soundManager } from '../utils/soundManager'
 
 const TrickyTechBoard: React.FC = () => {
   const dispatch = useDispatch()
@@ -29,6 +30,7 @@ const TrickyTechBoard: React.FC = () => {
   } | null>(null);
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [lastPlayedAction, setLastPlayedAction] = useState<ActionCard | null>(null);
+  const [soundEnabled, setSoundEnabled] = useState(soundManager.isEnabled());
 
   // Start timer
   useEffect(() => {
@@ -162,6 +164,12 @@ const TrickyTechBoard: React.FC = () => {
     setShowActionMenu(false);
   };
 
+  const handleToggleSound = () => {
+    const newSoundEnabled = !soundEnabled;
+    setSoundEnabled(newSoundEnabled);
+    soundManager.setEnabled(newSoundEnabled);
+  };
+
   // Add effect to process turn effects when teams switch
   useEffect(() => {
     if (!isFirstTurn) {
@@ -240,12 +248,25 @@ const TrickyTechBoard: React.FC = () => {
               </div>
             )}
           </div>
-          <button
-            onClick={handleResetGame}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
-          >
-            Reset Game
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleToggleSound}
+              className={`px-4 py-2 rounded transition-colors ${
+                soundEnabled 
+                  ? 'bg-green-600 text-white hover:bg-green-700' 
+                  : 'bg-gray-400 text-white hover:bg-gray-500'
+              }`}
+              title={soundEnabled ? 'Sound On' : 'Sound Off'}
+            >
+              {soundEnabled ? '🔊' : '🔇'}
+            </button>
+            <button
+              onClick={handleResetGame}
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            >
+              Reset Game
+            </button>
+          </div>
         </div>
 
         {/* Brain Health Bar */}

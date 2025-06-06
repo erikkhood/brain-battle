@@ -3,6 +3,7 @@ import { useDrag } from 'react-dnd'
 import type { Card as TrickyTechCard } from '../store/trickyTechSlice'
 import type { Card as ClassicCard } from '../store/gameSlice'
 import TrickyTechPlaceholder from './TrickyTechPlaceholder'
+import { soundManager } from '../utils/soundManager'
 
 // Type guard to check if a card is a TrickyTech card
 const isTrickyTechCard = (card: TrickyTechCard | ClassicCard): card is TrickyTechCard => {
@@ -55,6 +56,9 @@ const CardComponent: React.FC<CardProps> = ({
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
+    begin: () => {
+      soundManager.play('cardMove');
+    },
   }), [card, isDraggable, isInBattle, isFirstTurn]);
 
   const handleClick = () => {

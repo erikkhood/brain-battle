@@ -5,6 +5,7 @@ import { RootState } from '../store'
 import { Card, ActionCard, playCard, playActionCard, updateTimer, resetGame, processTurnEffects, forceClearBattleArena } from '../store/gameSlice'
 import CardComponent from './Card'
 import ClassicActionCardMenu from './ClassicActionCardMenu'
+import { soundManager } from '../utils/soundManager'
 
 // ErrorBoundary component for debugging
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
@@ -55,6 +56,7 @@ const GameBoard: React.FC = () => {
   } | null>(null);
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [lastPlayedAction, setLastPlayedAction] = useState<ActionCard | null>(null);
+  const [soundEnabled, setSoundEnabled] = useState(soundManager.isEnabled());
 
   // Start timer
   useEffect(() => {
@@ -310,6 +312,12 @@ const GameBoard: React.FC = () => {
     setShowActionMenu(false);
   };
 
+  const handleToggleSound = () => {
+    const newSoundEnabled = !soundEnabled;
+    setSoundEnabled(newSoundEnabled);
+    soundManager.setEnabled(newSoundEnabled);
+  };
+
   return (
     <ErrorBoundary>
       <div className="space-y-8">
@@ -348,12 +356,25 @@ const GameBoard: React.FC = () => {
                 </div>
               )}
             </div>
-            <button
-              onClick={handleResetGame}
-              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
-            >
-              Reset Game
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleToggleSound}
+                className={`px-4 py-2 rounded transition-colors ${
+                  soundEnabled 
+                    ? 'bg-green-600 text-white hover:bg-green-700' 
+                    : 'bg-gray-400 text-white hover:bg-gray-500'
+                }`}
+                title={soundEnabled ? 'Sound On' : 'Sound Off'}
+              >
+                {soundEnabled ? '🔊' : '🔇'}
+              </button>
+              <button
+                onClick={handleResetGame}
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+              >
+                Reset Game
+              </button>
+            </div>
           </div>
 
           {/* Brain Health Bar */}

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { soundManager } from '../utils/soundManager'
 
 // Import card images
 import cardBackImage from '../assets/cards/card-back.webp'
@@ -432,9 +433,17 @@ const trickyTechSlice = createSlice({
         const impact = cardInState.type === 'design-trick' ? -damage : damage;
         state.brainHealth = Math.max(-100, Math.min(100, state.brainHealth + impact));
         
+        // Play sound effect based on health change
+        if (impact > 0) {
+          soundManager.play('healthIncrease');
+        } else if (impact < 0) {
+          soundManager.play('healthDecrease');
+        }
+        
         // Move card to played cards if not already there
         if (!state.playedCards.some(c => c.id === card.id)) {
           state.playedCards.push({...cardInState});
+          soundManager.play('cardPlace');
           
           // Remove from team's hand
           if (card.type === 'design-trick') {
@@ -452,12 +461,14 @@ const trickyTechSlice = createSlice({
 
         if (targetCard) {
           targetCard.hp -= Math.abs(damage);
+          soundManager.play('attack');
           
           if (targetCard.hp <= 0) {
             state.playedCards = state.playedCards.filter(c => c.id !== targetCardId);
             state.designTrickCards = state.designTrickCards.filter(c => c.id !== targetCardId);
             state.healthyHabitCards = state.healthyHabitCards.filter(c => c.id !== targetCardId);
             state.graveyardCards.push({...targetCard});
+            soundManager.play('cardGraveyard');
           }
         }
       }
@@ -484,6 +495,7 @@ const trickyTechSlice = createSlice({
 
       // Switch teams and update first turn flag
       state.currentTeam = state.currentTeam === 'design-tricks' ? 'healthy-habits' : 'design-tricks';
+      soundManager.play('turnSwitch');
       if (state.isFirstTurn) {
         state.isFirstTurn = false;
       }
@@ -494,6 +506,7 @@ const trickyTechSlice = createSlice({
 
     playActionCard: (state, action: PayloadAction<ActionCard>) => {
       const actionCard = action.payload;
+      soundManager.play('actionCard');
 
       // Clear the battle arena before playing action card
       state.playedCards.forEach(card => {
