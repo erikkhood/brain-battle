@@ -422,7 +422,7 @@ const GameBoard: React.FC = () => {
           <div className="w-1/2">
             <div
               ref={drop}
-              className={`min-h-[400px] border-4 rounded-lg p-4 ${
+              className={`min-h-[300px] border-4 rounded-lg p-3 ${
                 isOver ? 'border-blue-500 bg-blue-50' : 'border-dashed border-gray-300'
               } ${isTargeting ? 'bg-orange-50' : ''}`}
             >
@@ -507,18 +507,18 @@ const GameBoard: React.FC = () => {
           </div>
         </div>
 
-        {/* Player's Hand - At Bottom */}
-        <div className="mt-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Your Hand (All Cards)</h2>
+        {/* Player's Hand - Fixed Height */}
+        <div className="mt-6">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-semibold">Your Hand (All Cards)</h2>
             {actionCards.length > 0 && (
               <div className="flex items-center space-x-4">
                 <button
                   onClick={handleShowActionMenu}
-                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors flex items-center gap-2"
+                  className="px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors flex items-center gap-2 text-sm"
                 >
                   <span>View Action Cards</span>
-                  <span className="bg-purple-500 px-2 py-0.5 rounded-full text-sm">
+                  <span className="bg-purple-500 px-1.5 py-0.5 rounded-full text-xs">
                     {actionCards.length}
                   </span>
                 </button>
@@ -526,8 +526,8 @@ const GameBoard: React.FC = () => {
             )}
           </div>
 
-          <div className={`flex flex-wrap justify-center gap-6 p-4 rounded-lg ${
-            currentTeam === 'thought-trappers' ? 'border-2 border-dashed border-red-300' : 'border-2 border-dashed border-green-300'
+          <div className={`max-h-48 overflow-y-auto flex flex-wrap justify-center gap-4 p-3 rounded-lg border-2 ${
+            currentTeam === 'thought-trappers' ? 'border-dashed border-red-300' : 'border-dashed border-green-300'
           }`}>
             {/* Thinking Traps Cards */}
             {trapperCards.map((card) => {
@@ -570,6 +570,13 @@ const GameBoard: React.FC = () => {
                 </div>
               );
             })}
+          </div>
+          
+          {/* Drag Hint */}
+          <div className="text-center mt-2">
+            <p className="text-xs text-gray-500">
+              💡 Drag cards from here to the Battle Arena • Scroll to see more cards
+            </p>
           </div>
         </div>
 
