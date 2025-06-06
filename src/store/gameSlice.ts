@@ -485,7 +485,7 @@ const gameSlice = createSlice({
   },
   reducers: {
     playCard: (state, action: PayloadAction<PlayCardAction>) => {
-      const { card, selectedAttack, target, targetCardId, removeFromPlay } = action.payload;
+      const { card, selectedAttack, target, targetCardId } = action.payload;
       
       // Find the card in the current game state to get the most up-to-date information
       let cardInState: Card | undefined;
@@ -681,7 +681,6 @@ const gameSlice = createSlice({
       (state.activeEffects.lastActionType as 'attack' | 'action' | null) = 'action';
 
       // Apply initial effects immediately
-      const allCardsInGame = [...state.playedCards, ...state.trapperCards, ...state.defenderCards];
       
       switch (actionCard.id) {
         case 'social-media-storm':
@@ -723,15 +722,8 @@ const gameSlice = createSlice({
           break;
 
         case 'rest-recharge':
-          // Get all cards
-          const allCards = [
-            ...state.trapperCards,
-            ...state.defenderCards,
-            ...state.playedCards
-          ];
-          
           // Apply one-time HP changes
-          allCards.forEach(card => {
+          [...state.trapperCards, ...state.defenderCards, ...state.playedCards].forEach(card => {
             if (card.type === 'thinking-trap') {
               card.hp = Math.max(0, card.hp - 20); // One-time reduction
             } else if (card.type === 'alternative-thought') {
@@ -821,9 +813,6 @@ const gameSlice = createSlice({
 
       // Process effects immediately after playing the card
       state.activeEffects.activeCardEffects.forEach(effect => {
-        // Get all cards that could be affected
-        const allCards = [...state.playedCards, ...state.trapperCards, ...state.defenderCards];
-        
         switch (effect.type) {
           case 'rest-recharge':
             // No HP changes during turn processing - effect was applied once when played
@@ -922,9 +911,6 @@ const gameSlice = createSlice({
     processTurnEffects: (state) => {
       // Process ongoing effects
       state.activeEffects.activeCardEffects.forEach(effect => {
-        // Get all cards that could be affected
-        const allCards = [...state.playedCards, ...state.trapperCards, ...state.defenderCards];
-        
         switch (effect.type) {
           case 'rest-recharge':
             // No HP changes during turn processing - effect was applied once when played

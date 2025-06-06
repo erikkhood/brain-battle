@@ -19,7 +19,7 @@ interface CardProps {
   // For classic mode only
   onSelectTarget?: (card: ClassicCard) => void
   onClick?: () => void
-  onSelect?: () => void
+
   size?: 'normal' | 'small'
   isInGraveyard?: boolean
 }
@@ -33,11 +33,10 @@ const CardComponent: React.FC<CardProps> = ({
   onConfirmAttack,
   onSelectTarget,
   onClick,
-  onSelect,
   size = 'normal',
   isInGraveyard = false
 }) => {
-  const [isFlipped, setIsFlipped] = useState(card.isFlipped || false);
+  const [isFlipped] = useState(card.isFlipped || false);
   const [showTargetSelection, setShowTargetSelection] = useState(false);
   const [selectedAttack, setSelectedAttack] = useState<number | null>(null);
 

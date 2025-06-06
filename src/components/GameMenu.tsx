@@ -77,16 +77,16 @@ const GameMenu: React.FC<GameMenuProps> = ({ onSelectMode, onReplayIntro }) => {
           </div>
         </div>
 
-        {/* Footer with Debug Option */}
+        {/* Footer with Intro Option */}
         <div className="text-center mt-12 text-white">
           <p className="text-sm opacity-75 mb-4">
             Created to help young minds understand and manage their thoughts better.
           </p>
           <button
             onClick={onReplayIntro}
-            className="text-xs text-white opacity-50 hover:opacity-75 transition-opacity underline"
+            className="px-6 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-all duration-200 backdrop-blur-sm font-medium"
           >
-            🎬 Replay Intro
+            🎬 Watch Intro Video
           </button>
         </div>
       </div>

@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDrop } from 'react-dnd'
 import { RootState } from '../store'
-import { Card, ActionCard, Team, Target, playCard, playActionCard, updateTimer, resetGame, processTurnEffects, forceClearBattleArena } from '../store/gameSlice'
+import { Card, ActionCard, playCard, playActionCard, updateTimer, resetGame, processTurnEffects, forceClearBattleArena } from '../store/gameSlice'
 import CardComponent from './Card'
 import ClassicActionCardMenu from './ClassicActionCardMenu'
-import ActiveEffects from './ActiveEffects'
 
 // ErrorBoundary component for debugging
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
@@ -16,7 +15,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
   static getDerivedStateFromError(error: any) {
     return { hasError: true, error };
   }
-  componentDidCatch(error: any, errorInfo: any) {
+  componentDidCatch() {
     // You can log errorInfo here if needed
     // console.error(error, errorInfo);
   }
@@ -106,7 +105,7 @@ const GameBoard: React.FC = () => {
     }),
   }), [currentTeam, showActionMenu, dispatch]);
 
-  const handleConfirmAttack = (attackNumber: number, target: 'brain-health' | 'card', targetCard?: Card) => {
+  const handleConfirmAttack = (attackNumber: number, target: 'brain-health' | 'card') => {
     if (target === 'card') {
       // Enter targeting mode
       setIsTargeting(true);
@@ -237,8 +236,6 @@ const GameBoard: React.FC = () => {
     const remainingSeconds = seconds % 60
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
-
-  const currentCards = currentTeam === 'thought-trappers' ? trapperCards : defenderCards
   const thinkingTraps = playedCards.filter(card => card.type === 'thinking-trap')
   const alternativeThoughts = playedCards.filter(card => card.type === 'alternative-thought')
 

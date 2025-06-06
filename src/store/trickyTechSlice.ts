@@ -373,7 +373,7 @@ const trickyTechSlice = createSlice({
       targetCardId?: string
       removeFromPlay?: boolean
     }>) => {
-      const { card, selectedAttack, target, targetCardId, removeFromPlay } = action.payload
+      const { card, selectedAttack, target, targetCardId } = action.payload
       
       // Find the card in the current game state to get the most up-to-date information
       let cardInState: Card | undefined;

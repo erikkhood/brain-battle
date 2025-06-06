@@ -12,15 +12,41 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
   const [duration, setDuration] = useState(0);
   const [canSkip, setCanSkip] = useState(false);
   const [hasVideoLoaded, setHasVideoLoaded] = useState(false);
+  const [loadingFailed, setLoadingFailed] = useState(false);
 
   useEffect(() => {
     // Allow skipping after 3 seconds
-    const timer = setTimeout(() => {
+    const skipTimer = setTimeout(() => {
       setCanSkip(true);
     }, 3000);
 
-    return () => clearTimeout(timer);
-  }, []);
+    // Auto-skip if video doesn't load within 5 seconds
+    const failureTimer = setTimeout(() => {
+      if (!hasVideoLoaded) {
+        console.log('Video failed to load within 5 seconds, auto-skipping');
+        setLoadingFailed(true);
+        onSkip();
+      }
+    }, 5000);
+
+    // Test if video file exists
+    if (videoRef.current) {
+      videoRef.current.addEventListener('loadstart', () => {
+        console.log('Video load started');
+      });
+      videoRef.current.addEventListener('loadeddata', () => {
+        console.log('Video data loaded');
+      });
+      videoRef.current.addEventListener('canplaythrough', () => {
+        console.log('Video can play through');
+      });
+    }
+
+    return () => {
+      clearTimeout(skipTimer);
+      clearTimeout(failureTimer);
+    };
+  }, [hasVideoLoaded, onSkip]);
 
   const handleVideoEnd = () => {
     console.log('Video ended, transitioning to menu');
@@ -41,13 +67,18 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
     }
   };
 
-  const handleVideoError = () => {
-    console.log('Video failed to load');
+  const handleVideoError = (error: any) => {
+    console.log('Video failed to load:', error);
     setHasVideoLoaded(false);
+    setLoadingFailed(true);
+    // Auto-skip after error
+    setTimeout(() => {
+      onSkip();
+    }, 2000);
   };
 
   const togglePlayPause = () => {
-    if (videoRef.current) {
+    if (videoRef.current && hasVideoLoaded) {
       if (isPlaying) {
         videoRef.current.pause();
         setIsPlaying(false);
@@ -55,7 +86,7 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
         videoRef.current.play().then(() => {
           setIsPlaying(true);
         }).catch((error) => {
-          console.log('Autoplay prevented:', error);
+          console.log('Play failed:', error);
           setIsPlaying(false);
         });
       }
@@ -63,9 +94,7 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
   };
 
   const handleSkip = () => {
-    if (canSkip) {
-      onSkip();
-    }
+    onSkip();
   };
 
   const formatTime = (time: number) => {
@@ -73,6 +102,28 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
+
+  // If loading failed, show error and auto-skip
+  if (loadingFailed) {
+    return (
+      <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50 p-8">
+        <div className="text-center">
+          <h1 className="text-5xl font-bold text-white mb-2">🧠⚔️</h1>
+          <h2 className="text-4xl font-bold text-white mb-2">Brain Battle</h2>
+          <p className="text-xl text-gray-300 mb-8">Get ready to challenge your mind!</p>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <p>Video could not be loaded. Proceeding to menu...</p>
+          </div>
+          <button
+            onClick={handleSkip}
+            className="px-8 py-3 bg-white bg-opacity-20 text-white rounded-lg hover:bg-opacity-30 transition-colors"
+          >
+            Continue to Menu
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50 p-8">
@@ -94,24 +145,33 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
           onError={handleVideoError}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          onCanPlay={() => setHasVideoLoaded(true)}
           playsInline
           muted={false}
+          preload="metadata"
+          controls={false}
         >
-          <source src="/intro-video.mp4" type="video/mp4" />
-          <source src="/intro-video.webm" type="video/webm" />
+          <source src="./intro-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
         </video>
 
-        {/* Fallback when no video loads */}
-        {!hasVideoLoaded && (
+        {/* Loading State */}
+        {!hasVideoLoaded && !loadingFailed && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-800 rounded-lg">
             <div className="text-center">
               <div className="animate-spin w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-gray-300">Loading video...</p>
+              <p className="text-gray-300 mb-4">Loading video...</p>
+              <button
+                onClick={handleSkip}
+                className="px-6 py-2 bg-white bg-opacity-20 text-white rounded hover:bg-opacity-30 transition-colors"
+              >
+                Skip to Menu
+              </button>
             </div>
           </div>
         )}
 
-        {/* Large Play Button Overlay (when video is paused) */}
+        {/* Large Play Button Overlay */}
         {hasVideoLoaded && !isPlaying && (
           <div className="absolute inset-0 flex items-center justify-center">
             <button
@@ -129,7 +189,6 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
       {/* Video Controls */}
       {hasVideoLoaded && (
         <div className="mt-6 bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-4 flex items-center gap-4">
-          {/* Play/Pause Button */}
           <button
             onClick={togglePlayPause}
             className="w-12 h-12 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full flex items-center justify-center text-white transition-colors"
@@ -145,7 +204,6 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
             )}
           </button>
 
-          {/* Progress Bar */}
           <div className="flex items-center gap-2 text-white text-sm">
             <span>{formatTime(currentTime)}</span>
             <div className="w-64 h-2 bg-gray-600 rounded-full overflow-hidden">
@@ -169,7 +227,7 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onVideoEnd, onSkip }) => {
         }`}
         disabled={!canSkip}
       >
-        {canSkip ? 'Skip Intro' : `Skip (${3 - Math.floor(currentTime)}s)`}
+        {canSkip ? 'Skip Intro' : `Skip (${Math.max(0, 3 - Math.floor(currentTime))}s)`}
       </button>
 
       {/* Instructions */}

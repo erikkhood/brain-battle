@@ -1,6 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
 
 interface ActiveEffect {
   type: string;
@@ -25,35 +23,7 @@ interface ActiveEffectsProps {
   effects: ActiveEffect[];
 }
 
-const getEffectColor = (type: string): string => {
-  switch (type) {
-    case 'rest-recharge':
-      return 'bg-gradient-to-r from-green-500 to-green-700';
-    case 'friend-support':
-      return 'bg-gradient-to-r from-blue-500 to-blue-700';
-    case 'social-media-storm':
-      return 'bg-gradient-to-r from-red-500 to-red-700';
-    case 'distraction-overload':
-      return 'bg-gradient-to-r from-purple-500 to-purple-700';
-    default:
-      return 'bg-gradient-to-r from-gray-500 to-gray-700';
-  }
-};
 
-const getEffectIcon = (type: string) => {
-  switch (type) {
-    case 'rest-recharge':
-      return '🔋';
-    case 'friend-support':
-      return '🛡️';
-    case 'social-media-storm':
-      return '⚡';
-    case 'distraction-overload':
-      return '💫';
-    default:
-      return '✨';
-  }
-};
 
 const ActiveEffects: React.FC<ActiveEffectsProps> = ({ effects }) => {
   if (effects.length === 0) {

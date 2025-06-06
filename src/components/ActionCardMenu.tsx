@@ -1,11 +1,5 @@
 import React from 'react';
 import { ActionCard as TrickyTechActionCard, Team as TrickyTechTeam } from '../store/trickyTechSlice';
-import { ActionCard as ClassicActionCard, Team as ClassicTeam } from '../store/gameSlice';
-
-// Type guard to check if a card is a TrickyTech action card
-const isTrickyTechActionCard = (card: TrickyTechActionCard | ClassicActionCard): card is TrickyTechActionCard => {
-  return 'description' in card && 'effects' in card;
-};
 
 interface ActionCardMenuProps {
   actionCards: TrickyTechActionCard[];

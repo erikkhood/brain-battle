@@ -10,7 +10,7 @@ type GameMode = 'classic' | 'tricky-tech' | 'ultimate' | null;
 
 const App: React.FC = () => {
   const [selectedMode, setSelectedMode] = useState<GameMode>(null);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
 
   const handleSelectMode = (mode: 'classic' | 'tricky-tech' | 'ultimate') => {
     setSelectedMode(mode);

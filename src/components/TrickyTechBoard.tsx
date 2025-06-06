@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDrop } from 'react-dnd'
 import { RootState } from '../store'
-import { Card, ActionCard, Team, Target, playCard, playActionCard, updateTimer, resetGame, processTurnEffects, forceClearBattleArena } from '../store/trickyTechSlice'
+import { Card, ActionCard, playCard, playActionCard, updateTimer, resetGame, processTurnEffects, forceClearBattleArena } from '../store/trickyTechSlice'
 import CardComponent from './Card'
 import ActionCardMenu from './ActionCardMenu'
 import ActiveEffects from './ActiveEffects'
@@ -17,10 +17,8 @@ const TrickyTechBoard: React.FC = () => {
     designTrickCards,
     healthyHabitCards,
     playedCards,
-    graveyardCards,
     isFirstTurn,
-    activeEffects,
-    matchingPairsBoost
+    activeEffects
   } = useSelector((state: RootState) => state.trickyTech)
 
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -80,7 +78,7 @@ const TrickyTechBoard: React.FC = () => {
     }),
   }), [currentTeam, showActionMenu, dispatch])
 
-  const handleConfirmAttack = (attackNumber: number, target: 'brain-health' | 'card', targetCard?: Card) => {
+  const handleConfirmAttack = (attackNumber: number, target: 'brain-health' | 'card') => {
     if (target === 'card') {
       // Enter targeting mode
       setIsTargeting(true);
@@ -184,10 +182,6 @@ const TrickyTechBoard: React.FC = () => {
     }
   };
 
-  const isCardInPlay = (cardId: string) => {
-    return playedCards.some(card => card.id === cardId);
-  };
-
   const canDragCard = (card: Card) => {
     // Can't drag if it's not your team's card
     if (currentTeam === 'design-tricks' && card.type !== 'design-trick') return false;
@@ -204,15 +198,6 @@ const TrickyTechBoard: React.FC = () => {
     
     return true;
   };
-
-  const isClassicCard = (item: any): item is Card => {
-    return typeof item === 'object' && 
-           item !== null && 
-           'type' in item && 
-           (item.type === 'design-trick' || item.type === 'healthy-habit');
-  };
-
-  const currentTeamCards = currentTeam === 'design-tricks' ? designTrickCards : healthyHabitCards;
 
   return (
     <div className="space-y-8">
