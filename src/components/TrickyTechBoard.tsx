@@ -98,7 +98,19 @@ const TrickyTechBoard: React.FC = () => {
   };
 
   const handleSelectTarget = (targetCard: Card) => {
+    console.log('TrickyTech handleSelectTarget called with:', targetCard);
+    console.log('isTargeting:', isTargeting);
+    console.log('targetingInfo:', targetingInfo);
+    
     if (isTargeting && targetingInfo) {
+      console.log('Dispatching attack:', {
+        card: targetingInfo.sourceCard,
+        selectedAttack: targetingInfo.attackNumber,
+        target: 'card',
+        targetCardId: targetCard.id,
+        removeFromPlay: true
+      });
+      
       dispatch(playCard({
         card: targetingInfo.sourceCard,
         selectedAttack: targetingInfo.attackNumber,
@@ -111,6 +123,8 @@ const TrickyTechBoard: React.FC = () => {
       setIsTargeting(false);
       setTargetingInfo(null);
       setSelectedCard(null);
+    } else {
+      console.log('Not dispatching attack - missing conditions');
     }
   };
 

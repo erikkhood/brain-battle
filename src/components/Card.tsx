@@ -58,17 +58,25 @@ const CardComponent: React.FC<CardProps> = ({
   }), [card, isDraggable, isInBattle, isFirstTurn]);
 
   const handleClick = () => {
+    console.log('Card clicked:', card.name, 'isTargetable:', isTargetable, 'onSelectTarget exists:', !!onSelectTarget);
+    
     if (isTargetable && onSelectTarget) {
+      console.log('Calling onSelectTarget for card:', card.name);
       // Call onSelectTarget for both classic and tricky tech cards
       if (isTrickyTechCard(card)) {
         // For TrickyTech cards, we need to cast properly
+        console.log('TrickyTech card - calling onSelectTarget');
         onSelectTarget(card as any);
       } else {
         // For classic cards
+        console.log('Classic card - calling onSelectTarget');
         onSelectTarget(card as ClassicCard);
       }
     } else if (onClick) {
+      console.log('Calling onClick');
       onClick();
+    } else {
+      console.log('No action taken for card click');
     }
   };
 
