@@ -87,18 +87,18 @@ const sampleCards: Card[] = [
   {
     id: 'dt1',
     type: 'design-trick',
-    name: 'Infinite Scroll',
+    name: 'Infinity Scroller',
     description: 'Makes you scroll endlessly through social media content',
-    hp: 70,
+    hp: 75,
     attack1: {
-      name: 'Endless Feed',
-      damage: 30,
-      description: 'Makes you scroll endlessly through social media content'
+      name: 'Bottomless Feed',
+      damage: 35,
+      description: 'Makes you keep scrolling through content without noticing time passing.'
     },
     attack2: {
       name: 'Just One More',
-      damage: 50,
-      description: 'Convinces you to scroll "just one more minute" repeatedly'
+      damage: 55,
+      description: 'Convinces you to keep watching videos or viewing posts way past bedtime.'
     },
     frontImage: infiniteScrollImage,
     backImage: cardBackImage,
@@ -112,14 +112,14 @@ const sampleCards: Card[] = [
     description: 'Bombards you with endless notifications to break focus',
     hp: 65,
     attack1: {
-      name: 'Buzz Blast',
-      damage: 25,
-      description: 'Interrupts your focus with constant notifications'
+      name: 'Red Alert',
+      damage: 30,
+      description: 'Uses bright colors and numbers to make you check your phone quickly.'
     },
     attack2: {
-      name: 'FOMO Strike',
+      name: 'FOMO Blast',
       damage: 45,
-      description: 'Fear of missing out makes you keep checking notifications'
+      description: 'Creates fear of missing out if you don\'t check notifications right away.'
     },
     frontImage: notifierImage,
     backImage: cardBackImage,
@@ -131,16 +131,16 @@ const sampleCards: Card[] = [
     type: 'design-trick',
     name: 'Autoplayer',
     description: 'Automatically plays the next video to keep you watching',
-    hp: 75,
+    hp: 70,
     attack1: {
       name: 'Next Episode',
-      damage: 35,
-      description: 'Automatically starts the next video before you can decide'
+      damage: 40,
+      description: 'Automatically plays the next video or episode before you can decide to stop.'
     },
     attack2: {
-      name: 'Binge Mode',
-      damage: 55,
-      description: 'Makes you watch entire seasons in one sitting'
+      name: 'Recommendation Rabbit Hole',
+      damage: 50,
+      description: 'Pulls you into watching more and more related content for hours.'
     },
     frontImage: autoplayerImage,
     backImage: cardBackImage,
@@ -150,18 +150,18 @@ const sampleCards: Card[] = [
   {
     id: 'dt4',
     type: 'design-trick',
-    name: 'Engagement',
+    name: 'Engagementer',
     description: 'Uses likes and comments to keep you engaged and scrolling',
     hp: 80,
     attack1: {
-      name: 'Like Addiction',
-      damage: 30,
-      description: 'Makes you crave likes and social validation'
+      name: 'Like Checker',
+      damage: 35,
+      description: 'Makes you check constantly to see how many likes your post received.'
     },
     attack2: {
-      name: 'Comment Chaos',
-      damage: 50,
-      description: 'Pulls you into endless comment arguments and drama'
+      name: 'Fire Streak',
+      damage: 60,
+      description: 'Forces you to open the app daily to maintain your streak, even when busy.'
     },
     frontImage: engagementImage,
     backImage: cardBackImage,
@@ -173,16 +173,16 @@ const sampleCards: Card[] = [
     type: 'healthy-habit',
     name: 'Touch Grass',
     description: 'Reminds you to take breaks and go outside for fresh air',
-    hp: 90,
+    hp: 95,
     attack1: {
-      name: 'Nature Break',
-      damage: 45,
-      description: 'Reconnects you with the real world outside'
+      name: 'Reality Check',
+      damage: 50,
+      description: 'Reminds you there\'s a whole real world outside your screen.'
     },
     attack2: {
-      name: 'Fresh Air',
-      damage: 65,
-      description: 'Clears your mind with outdoor activities'
+      name: 'Nature Reset',
+      damage: 75,
+      description: 'Uses time outdoors to reset your brain\'s attention without screens.'
     },
     frontImage: touchGrassImage,
     backImage: cardBackImage,
@@ -192,18 +192,18 @@ const sampleCards: Card[] = [
   {
     id: 'hh2',
     type: 'healthy-habit',
-    name: 'Time Limit',
+    name: 'Time Limiter',
     description: 'Helps you set and stick to healthy screen time limits',
     hp: 85,
     attack1: {
-      name: 'App Timer',
-      damage: 40,
-      description: 'Sets healthy boundaries on app usage'
+      name: 'Screen Time Alert',
+      damage: 45,
+      description: 'Reminds you exactly how much time you\'re spending on different apps.'
     },
     attack2: {
-      name: 'Digital Sunset',
-      damage: 60,
-      description: 'Helps you wind down before bedtime'
+      name: 'App Settings',
+      damage: 65,
+      description: 'Sets healthy time limits on apps to prevent excessive use.'
     },
     frontImage: timeLimitImage,
     backImage: cardBackImage,
@@ -213,18 +213,18 @@ const sampleCards: Card[] = [
   {
     id: 'hh3',
     type: 'healthy-habit',
-    name: 'Silence',
+    name: 'Silencer',
     description: 'Helps you manage notifications and reduce distractions',
-    hp: 80,
+    hp: 90,
     attack1: {
       name: 'Do Not Disturb',
-      damage: 35,
-      description: 'Blocks distracting notifications during focus time'
+      damage: 55,
+      description: 'Blocks notifications during important activities like homework or sleep.'
     },
     attack2: {
-      name: 'Focus Mode',
-      damage: 55,
-      description: 'Creates periods of uninterrupted focus'
+      name: 'Push Away Notifications',
+      damage: 70,
+      description: 'Turns off non-essential alerts to prevent constant interruptions.'
     },
     frontImage: silenceImage,
     backImage: cardBackImage,
@@ -236,16 +236,16 @@ const sampleCards: Card[] = [
     type: 'healthy-habit',
     name: 'Mindful Moment',
     description: 'Promotes mindful and intentional technology use',
-    hp: 95,
+    hp: 100,
     attack1: {
-      name: 'Deep Breath',
-      damage: 50,
-      description: 'Takes a moment to center yourself and be present'
+      name: 'Attention Anchor',
+      damage: 60,
+      description: 'Brings your focus back to the present moment when tech distracts you.'
     },
     attack2: {
-      name: 'Meditation',
-      damage: 70,
-      description: 'Practices mindfulness to resist digital distractions'
+      name: 'Purpose Pause',
+      damage: 80,
+      description: 'Helps you pause and ask \'Why am I using this app right now?\' before getting trapped.'
     },
     frontImage: mindfulMomentImage,
     backImage: cardBackImage,
@@ -259,57 +259,59 @@ const actionCards: ActionCard[] = [
   {
     id: 'late-night-scroll',
     name: 'Late Night Scroll',
-    effect: 'Increases all Design Tricks HP by 25, enables double damage for 2 turns, and reduces all Healthy Habits HP by 15.',
-    description: 'Late night scrolling makes design tricks more powerful as your brain gets tired',
+    effect: 'When played, all Design Trick cards gain 30 HP and their attacks do double damage for 2 turns. Healthy Habit cards lose 20 HP and their healing is reduced by half.',
+    description: 'Using devices late at night makes design tricks much more powerful',
     type: 'action',
     team: 'design-tricks',
     image: lateNightScrollImage,
     duration: 2,
     effects: {
-      designTrickHpBoost: 25,
+      designTrickHpBoost: 30,
       doubleDamage: true,
-      healthyHabitHpReduction: 15
-    }
-  },
-  {
-    id: 'mini-game-distractor',
-    name: 'Mini-Game Distractor',
-    effect: 'Reduces all Healthy Habits HP by 20 and halves their healing for 2 turns.',
-    description: 'Small games within apps can distract you from your healthy tech habits',
-    type: 'action',
-    team: 'design-tricks',
-    image: miniGameDistractorImage,
-    duration: 2,
-    effects: {
       healthyHabitHpReduction: 20,
       healthyHabitHealingReduction: 0.5
     }
   },
   {
+    id: 'mini-game-distractor',
+    name: 'Mini-Game Distractor',
+    effect: 'When played, one Healthy Habit card is blocked from attacking for 2 turns. Brain Health decreases by 15 points immediately.',
+    description: 'Many apps include small games designed to keep you engaged longer',
+    type: 'action',
+    team: 'design-tricks',
+    image: miniGameDistractorImage,
+    duration: 2,
+    effects: {
+      blockCard: true,
+      brainHealthChange: -15
+    }
+  },
+  {
     id: 'flow-hobby',
     name: 'Flow Hobby',
-    effect: 'Activates a shield to block the next attack and boosts your strongest Healthy Habit by 30 HP.',
-    description: 'Getting absorbed in a non-tech hobby helps strengthen your healthy habits',
+    effect: 'When played, all Healthy Habit cards gain 40 HP and their healing effects double for 3 turns. All Design Trick cards lose 15 HP immediately.',
+    description: 'Getting absorbed in a non-tech hobby puts your brain in a flow state',
     type: 'action',
     team: 'healthy-habits',
     image: flowHobbyImage,
-    duration: 1,
+    duration: 3,
     effects: {
-      healthyHabitHpBoost: 30,
-      blockCard: true
+      healthyHabitHpBoost: 40,
+      healthyHabitHealingMultiplier: 2,
+      designTrickHpReduction: 15
     }
   },
   {
     id: 'phone-policy',
     name: 'Phone Policy',
-    effect: 'Reduces all Design Tricks HP by 20 and increases all Healthy Habits HP by 10. Effect continues for 3 turns.',
-    description: 'Clear rules about device usage help weaken design tricks',
+    effect: 'When played, all players must choose one Design Trick card and remove it from play. Healthy Habit cards get +10 HP for the remainder of the game.',
+    description: 'Creating clear rules about when and where phones can be used',
     type: 'action',
     team: 'healthy-habits',
     image: phonePolicyImage,
-    duration: 3,
+    duration: 999, // Permanent effect
     effects: {
-      designTrickHpReduction: 20,
+      removeDesignTrick: true,
       healthyHabitHpBoost: 10
     }
   }
