@@ -18,6 +18,7 @@ const TrickyTechBoard: React.FC = () => {
     designTrickCards,
     healthyHabitCards,
     playedCards,
+    graveyardCards,
     isFirstTurn,
     activeEffects
   } = useSelector((state: RootState) => state.trickyTech)
@@ -484,6 +485,61 @@ const TrickyTechBoard: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* Graveyard */}
+        {graveyardCards.length > 0 && (
+          <div className="mt-8 p-6 bg-gray-800 rounded-lg text-white">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold">Graveyard</h2>
+              <p className="text-gray-400 mt-1">Defeated Cards ({graveyardCards.length})</p>
+            </div>
+            <div className="flex flex-wrap gap-4 justify-center">
+              {graveyardCards.map((card) => (
+                <div key={card.id} className="relative">
+                  {'type' in card && (card.type === 'design-trick' || card.type === 'healthy-habit') ? (
+                    <>
+                      <CardComponent 
+                        card={card as Card}
+                        isDraggable={false}
+                        isInBattle={false}
+                        isFirstTurn={isFirstTurn}
+                        size="small"
+                        isInGraveyard={true}
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-70 rounded-lg flex items-center justify-center">
+                        <span className="text-white text-4xl">💀</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className={`w-[150px] h-[210px] rounded-lg overflow-hidden ${
+                      (card as ActionCard).team === 'design-tricks' 
+                        ? 'bg-gradient-to-br from-red-800 to-red-900' 
+                        : 'bg-gradient-to-br from-green-800 to-green-900'
+                    }`}>
+                      <img
+                        src={(card as ActionCard).image}
+                        alt={card.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement?.classList.add('flex', 'items-center', 'justify-center');
+                          const span = document.createElement('span');
+                          span.textContent = (card as ActionCard).team === 'design-tricks' ? '🔴' : '🟢';
+                          span.className = 'text-4xl';
+                          target.parentElement?.appendChild(span);
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-end justify-center p-2">
+                        <h3 className="font-semibold text-sm text-white text-center">{card.name}</h3>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
     </div>
   );
 };
