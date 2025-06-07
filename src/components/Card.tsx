@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useDrag } from 'react-dnd'
 import type { Card as TrickyTechCard } from '../store/trickyTechSlice'
 import type { Card as ClassicCard } from '../store/gameSlice'
+import { checkAttackAvailability as checkTrickyTechAttackAvailability } from '../store/trickyTechSlice'
+import { checkAttackAvailability as checkClassicAttackAvailability } from '../store/gameSlice'
 import TrickyTechPlaceholder from './TrickyTechPlaceholder'
 import { soundManager } from '../utils/soundManager'
 
@@ -108,9 +110,13 @@ const CardComponent: React.FC<CardProps> = ({
     return usage;
   };
 
-  const isAttackDisabled = () => {
-    // No attack usage limits - attacks are never disabled
-    return false;
+  const isAttackDisabled = (attackNumber: number) => {
+    // Check if attack is available based on consecutive use limits
+    if (isTrickyTechCard(card)) {
+      return !checkTrickyTechAttackAvailability(card, attackNumber as 1 | 2);
+    } else {
+      return !checkClassicAttackAvailability(card, attackNumber as 1 | 2);
+    }
   };
 
   const cardClasses = `
@@ -240,12 +246,12 @@ const CardComponent: React.FC<CardProps> = ({
             
             <button
               className={`w-full p-2 rounded text-left text-sm transition-colors ${
-                isAttackDisabled() 
+                isAttackDisabled(1) 
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                   : 'bg-blue-100 hover:bg-blue-200 text-blue-800'
               }`}
               onClick={() => handleAttackSelect(1)}
-              disabled={isAttackDisabled()}
+              disabled={isAttackDisabled(1)}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1 pr-2">
@@ -255,20 +261,24 @@ const CardComponent: React.FC<CardProps> = ({
                     {card.attack1.description}
                   </div>
                 </div>
-                <div className="text-xs font-bold flex-shrink-0 text-blue-600">
-                  {getAttackUsesCount(1)}x
+                <div className="text-xs font-bold flex-shrink-0">
+                  {isAttackDisabled(1) ? (
+                    <span className="text-red-500">🚫</span>
+                  ) : (
+                    <span className="text-blue-600">{getAttackUsesCount(1)}x</span>
+                  )}
                 </div>
               </div>
             </button>
             
             <button
               className={`w-full p-2 rounded text-left text-sm transition-colors ${
-                isAttackDisabled() 
+                isAttackDisabled(2) 
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                   : 'bg-blue-100 hover:bg-blue-200 text-blue-800'
               }`}
               onClick={() => handleAttackSelect(2)}
-              disabled={isAttackDisabled()}
+              disabled={isAttackDisabled(2)}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1 pr-2">
@@ -278,8 +288,12 @@ const CardComponent: React.FC<CardProps> = ({
                     {card.attack2.description}
                   </div>
                 </div>
-                <div className="text-xs font-bold flex-shrink-0 text-blue-600">
-                  {getAttackUsesCount(2)}x
+                <div className="text-xs font-bold flex-shrink-0">
+                  {isAttackDisabled(2) ? (
+                    <span className="text-red-500">🚫</span>
+                  ) : (
+                    <span className="text-blue-600">{getAttackUsesCount(2)}x</span>
+                  )}
                 </div>
               </div>
             </button>

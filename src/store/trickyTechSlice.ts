@@ -1,6 +1,31 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { soundManager } from '../utils/soundManager'
 
+// Helper function to check if an attack can be used based on consecutive attack limits
+const checkAttackAvailability = (card: Card, attackNumber: 1 | 2): boolean => {
+  // If this is the first attack ever, allow it
+  if (card.attackUsage.lastAttackUsed === null) {
+    return true;
+  }
+
+  // If trying to use the same attack as last time
+  if (card.attackUsage.lastAttackUsed === attackNumber) {
+    // Allow if haven't used it twice in a row yet
+    const consecutiveCount = attackNumber === 1 ? card.attackUsage.consecutiveAttack1 : card.attackUsage.consecutiveAttack2;
+    return consecutiveCount < 2;
+  } else {
+    // Trying to switch to different attack
+    const otherAttackConsecutiveCount = attackNumber === 1 ? card.attackUsage.consecutiveAttack2 : card.attackUsage.consecutiveAttack1;
+    
+    // If the other attack was used twice in a row, must use the new attack twice before switching back
+    if (otherAttackConsecutiveCount >= 2) {
+      return true; // Allow switching to this attack
+    } else {
+      return true; // Always allow switching to different attack
+    }
+  }
+};
+
 // Import card images
 import cardBackImage from '../assets/cards/card-back.webp'
 
@@ -41,6 +66,9 @@ export interface Card {
   attackUsage: {
     attack1: number
     attack2: number
+    consecutiveAttack1: number
+    consecutiveAttack2: number
+    lastAttackUsed: 1 | 2 | null
   }
   description: string
 }
@@ -103,7 +131,7 @@ const sampleCards: Card[] = [
     frontImage: infiniteScrollImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'dt2',
@@ -124,7 +152,7 @@ const sampleCards: Card[] = [
     frontImage: notifierImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'dt3',
@@ -145,7 +173,7 @@ const sampleCards: Card[] = [
     frontImage: autoplayerImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'dt4',
@@ -166,7 +194,7 @@ const sampleCards: Card[] = [
     frontImage: engagementImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'hh1',
@@ -187,7 +215,7 @@ const sampleCards: Card[] = [
     frontImage: touchGrassImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'hh2',
@@ -208,7 +236,7 @@ const sampleCards: Card[] = [
     frontImage: timeLimitImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'hh3',
@@ -229,7 +257,7 @@ const sampleCards: Card[] = [
     frontImage: silenceImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'hh4',
@@ -250,7 +278,7 @@ const sampleCards: Card[] = [
     frontImage: mindfulMomentImage,
     backImage: cardBackImage,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   }
 ]
 
@@ -398,11 +426,15 @@ const trickyTechSlice = createSlice({
         return;
       }
 
-      // No attack usage limits - cards can be used indefinitely as long as they're alive
-
       // If there are any active effects from action cards played this turn, return early
       if (state.activeEffects.lastActionType === 'action') {
         return;
+      }
+
+      // Check consecutive attack limits before allowing the attack
+      const canUseAttack = checkAttackAvailability(cardInState, selectedAttack as 1 | 2);
+      if (!canUseAttack) {
+        return; // Attack is blocked due to consecutive use limit
       }
 
       const attack = selectedAttack === 1 ? cardInState.attack1 : cardInState.attack2;
@@ -413,11 +445,25 @@ const trickyTechSlice = createSlice({
         damage *= 2;
       }
 
-      // Track usage for display purposes only (no limits)
+      // Update attack tracking
       if (selectedAttack === 1) {
         cardInState.attackUsage.attack1++;
+        if (cardInState.attackUsage.lastAttackUsed === 1) {
+          cardInState.attackUsage.consecutiveAttack1++;
+        } else {
+          cardInState.attackUsage.consecutiveAttack1 = 1;
+          cardInState.attackUsage.consecutiveAttack2 = 0;
+        }
+        cardInState.attackUsage.lastAttackUsed = 1;
       } else {
         cardInState.attackUsage.attack2++;
+        if (cardInState.attackUsage.lastAttackUsed === 2) {
+          cardInState.attackUsage.consecutiveAttack2++;
+        } else {
+          cardInState.attackUsage.consecutiveAttack2 = 1;
+          cardInState.attackUsage.consecutiveAttack1 = 0;
+        }
+        cardInState.attackUsage.lastAttackUsed = 2;
       }
 
       // Apply the attack effects based on target
@@ -677,4 +723,7 @@ export const {
   forceClearBattleArena
 } = trickyTechSlice.actions;
 
-export default trickyTechSlice.reducer; 
+export default trickyTechSlice.reducer
+
+// Export helper function for use in components
+export { checkAttackAvailability }; 

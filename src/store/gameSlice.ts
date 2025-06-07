@@ -70,6 +70,9 @@ export interface Card {
   attackUsage: {
     attack1: number
     attack2: number
+    consecutiveAttack1: number
+    consecutiveAttack2: number
+    lastAttackUsed: 1 | 2 | null
   }
   specialEffect?: SpecialEffect
 }
@@ -142,7 +145,7 @@ const sampleCards: Card[] = [
     frontImage: allOrNothingFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'tt2',
@@ -161,7 +164,7 @@ const sampleCards: Card[] = [
     },
     frontImage: labelerFront,
     backImage: cardBack,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'tt3',
@@ -180,7 +183,7 @@ const sampleCards: Card[] = [
     },
     frontImage: mindReaderFront,
     backImage: cardBack,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'tt4',
@@ -200,7 +203,7 @@ const sampleCards: Card[] = [
     frontImage: negativeFilterFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'tt5',
@@ -220,7 +223,7 @@ const sampleCards: Card[] = [
     frontImage: shouldMonsterFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'tt6',
@@ -240,7 +243,7 @@ const sampleCards: Card[] = [
     frontImage: personalizerFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'tt7',
@@ -260,7 +263,7 @@ const sampleCards: Card[] = [
     frontImage: fortuneTellerFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'at1',
@@ -279,7 +282,7 @@ const sampleCards: Card[] = [
     },
     frontImage: middlePathFront,
     backImage: cardBack,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'at2',
@@ -298,7 +301,7 @@ const sampleCards: Card[] = [
     },
     frontImage: growthMindsetFront,
     backImage: cardBack,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'at3',
@@ -317,7 +320,7 @@ const sampleCards: Card[] = [
     },
     frontImage: factCheckerFront,
     backImage: cardBack,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'at4',
@@ -336,8 +339,7 @@ const sampleCards: Card[] = [
     },
     frontImage: balancedViewerFront,
     backImage: cardBack,
-    isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'at5',
@@ -357,7 +359,7 @@ const sampleCards: Card[] = [
     frontImage: flexibleThinkerFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'at6',
@@ -377,7 +379,7 @@ const sampleCards: Card[] = [
     frontImage: realityCheckerFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   },
   {
     id: 'at7',
@@ -397,7 +399,7 @@ const sampleCards: Card[] = [
     frontImage: possibilityExplorerFront,
     backImage: cardBack,
     isFlipped: false,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   }
 ]
 
@@ -410,6 +412,31 @@ const shuffleArray = <T>(array: T[]): T[] => {
   }
   return shuffled
 }
+
+// Helper function to check if an attack can be used based on consecutive attack limits
+const checkAttackAvailability = (card: Card, attackNumber: 1 | 2): boolean => {
+  // If this is the first attack ever, allow it
+  if (card.attackUsage.lastAttackUsed === null) {
+    return true;
+  }
+
+  // If trying to use the same attack as last time
+  if (card.attackUsage.lastAttackUsed === attackNumber) {
+    // Allow if haven't used it twice in a row yet
+    const consecutiveCount = attackNumber === 1 ? card.attackUsage.consecutiveAttack1 : card.attackUsage.consecutiveAttack2;
+    return consecutiveCount < 2;
+  } else {
+    // Trying to switch to different attack
+    const otherAttackConsecutiveCount = attackNumber === 1 ? card.attackUsage.consecutiveAttack2 : card.attackUsage.consecutiveAttack1;
+    
+    // If the other attack was used twice in a row, must use the new attack twice before switching back
+    if (otherAttackConsecutiveCount >= 2) {
+      return true; // Allow switching to this attack
+    } else {
+      return true; // Always allow switching to different attack
+    }
+  }
+};
 
 interface ActiveCardEffect {
   type: 'rest-recharge' | 'friend-support' | 'social-media-storm' | 'distraction-overload'
@@ -450,11 +477,11 @@ const initialState: GameState = {
   actionCards: shuffleArray(actionCards),
   trapperCards: shuffleArray(sampleCards.filter(card => card.type === 'thinking-trap')).map(card => ({
     ...card,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   })),
   defenderCards: shuffleArray(sampleCards.filter(card => card.type === 'alternative-thought')).map(card => ({
     ...card,
-    attackUsage: { attack1: 0, attack2: 0 }
+    attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null }
   })),
   playedCards: [],
   graveyardCards: [],
@@ -552,11 +579,31 @@ const gameSlice = createSlice({
         }
       }
 
-      // Track usage for display purposes only (no limits)
+      // Check consecutive attack limits before allowing the attack
+      const canUseAttack = checkAttackAvailability(cardInState, selectedAttack as 1 | 2);
+      if (!canUseAttack) {
+        return; // Attack is blocked due to consecutive use limit
+      }
+
+      // Update attack tracking
       if (selectedAttack === 1) {
         cardInState.attackUsage.attack1++;
+        if (cardInState.attackUsage.lastAttackUsed === 1) {
+          cardInState.attackUsage.consecutiveAttack1++;
+        } else {
+          cardInState.attackUsage.consecutiveAttack1 = 1;
+          cardInState.attackUsage.consecutiveAttack2 = 0;
+        }
+        cardInState.attackUsage.lastAttackUsed = 1;
       } else {
         cardInState.attackUsage.attack2++;
+        if (cardInState.attackUsage.lastAttackUsed === 2) {
+          cardInState.attackUsage.consecutiveAttack2++;
+        } else {
+          cardInState.attackUsage.consecutiveAttack2 = 1;
+          cardInState.attackUsage.consecutiveAttack1 = 0;
+        }
+        cardInState.attackUsage.lastAttackUsed = 2;
       }
 
       // Apply the attack effects based on target
@@ -864,13 +911,13 @@ const gameSlice = createSlice({
     resetGame: (state) => {
       const freshTrapperCards = shuffleArray(sampleCards.filter(card => card.type === 'thinking-trap')).map(card => ({
         ...card,
-        attackUsage: { attack1: 0, attack2: 0 },
+        attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null },
         isFlipped: false
       }));
       
       const freshDefenderCards = shuffleArray(sampleCards.filter(card => card.type === 'alternative-thought')).map(card => ({
         ...card,
-        attackUsage: { attack1: 0, attack2: 0 },
+        attackUsage: { attack1: 0, attack2: 0, consecutiveAttack1: 0, consecutiveAttack2: 0, lastAttackUsed: null },
         isFlipped: false
       }));
 
@@ -1010,4 +1057,7 @@ export const {
   forceClearBattleArena,
   switchTeams
 } = gameSlice.actions
-export default gameSlice.reducer 
+export default gameSlice.reducer
+
+// Export helper function for use in components
+export { checkAttackAvailability } 
