@@ -209,15 +209,13 @@ const TrickyTechBoard: React.FC = () => {
     if (currentTeam === 'design-tricks' && card.type !== 'design-trick') return false;
     if (currentTeam === 'healthy-habits' && card.type !== 'healthy-habit') return false;
     
-    // Can't drag if already in play
-    if (card.attackUsage && (card.attackUsage.attack1 > 0 || card.attackUsage.attack2 > 0)) return false;
-    
     // Can't drag if action menu is open
     if (showActionMenu) return false;
     
     // Can't drag if card is selected for battle
     if (selectedCard && selectedCard.id === card.id) return false;
     
+    // Cards can be used as long as they're alive (not in graveyard)
     return true;
   };
 

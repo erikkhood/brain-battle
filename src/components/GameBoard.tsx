@@ -270,8 +270,10 @@ const GameBoard: React.FC = () => {
   const canDragCard = (card: Card) => {
     const isCorrectTeam = (card.type === 'thinking-trap' && currentTeam === 'thought-trappers') ||
                          (card.type === 'alternative-thought' && currentTeam === 'thought-defenders');
-    const notInPlay = !isCardInPlay(card.id);
-    return isCorrectTeam && notInPlay;
+    // Cards can be dragged as long as they're the correct team and not in the battle arena
+    const notInBattleArena = !isCardInPlay(card.id);
+    const notSelected = !selectedCard || selectedCard.id !== card.id;
+    return isCorrectTeam && notInBattleArena && notSelected;
   };
 
   // Add effect to clear last played action after a delay
@@ -553,16 +555,15 @@ const GameBoard: React.FC = () => {
             {/* Thinking Traps Cards */}
             {trapperCards.map((card) => {
               const inPlay = isCardInPlay(card.id);
-              const inActivePlay = card.attackUsage.attack1 > 0 || card.attackUsage.attack2 > 0;
               const isSelected = selectedCard && selectedCard.id === card.id;
-              const isUnavailable = inPlay || inActivePlay || isSelected;
+              const isUnavailable = inPlay || isSelected;
               
               return (
                 <div key={card.id} className={isUnavailable ? 'opacity-50 grayscale pointer-events-none' : ''}>
                   <CardComponent 
                     key={card.id} 
                     card={card} 
-                    isDraggable={!isUnavailable}
+                    isDraggable={canDragCard(card)}
                     isInBattle={false}
                     isFirstTurn={isFirstTurn}
                     size="small"
@@ -574,16 +575,15 @@ const GameBoard: React.FC = () => {
             {/* Alternative Thoughts Cards */}
             {defenderCards.map((card) => {
               const inPlay = isCardInPlay(card.id);
-              const inActivePlay = card.attackUsage.attack1 > 0 || card.attackUsage.attack2 > 0;
               const isSelected = selectedCard && selectedCard.id === card.id;
-              const isUnavailable = inPlay || inActivePlay || isSelected;
+              const isUnavailable = inPlay || isSelected;
               
               return (
                 <div key={card.id} className={isUnavailable ? 'opacity-50 grayscale pointer-events-none' : ''}>
                   <CardComponent 
                     key={card.id} 
                     card={card} 
-                    isDraggable={!isUnavailable}
+                    isDraggable={canDragCard(card)}
                     isInBattle={false}
                     isFirstTurn={isFirstTurn}
                     size="small"

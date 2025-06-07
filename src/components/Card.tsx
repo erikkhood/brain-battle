@@ -103,13 +103,14 @@ const CardComponent: React.FC<CardProps> = ({
     setShowTargetSelection(false);
   };
 
-  const getAttackUsesRemaining = (attackNumber: number) => {
+  const getAttackUsesCount = (attackNumber: number) => {
     const usage = attackNumber === 1 ? card.attackUsage.attack1 : card.attackUsage.attack2;
-    return Math.max(0, 2 - usage);
+    return usage;
   };
 
-  const isAttackDisabled = (attackNumber: number) => {
-    return getAttackUsesRemaining(attackNumber) === 0;
+  const isAttackDisabled = () => {
+    // No attack usage limits - attacks are never disabled
+    return false;
   };
 
   const cardClasses = `
@@ -230,29 +231,21 @@ const CardComponent: React.FC<CardProps> = ({
           <div className="space-y-2 mt-3 p-2 bg-gray-50 rounded">
             <div className="text-xs font-medium text-gray-700 text-center">Choose Attack:</div>
             
-            {/* Show reset hint when one attack is exhausted */}
-            {(getAttackUsesRemaining(1) === 0 && getAttackUsesRemaining(2) > 0) || 
-             (getAttackUsesRemaining(2) === 0 && getAttackUsesRemaining(1) > 0) ? (
-              <div className="text-xs text-purple-600 text-center mb-2 font-medium">
-                💡 Use both attacks to reset uses!
-              </div>
-            ) : null}
-            
-            {/* Show reset notification when both attacks are exhausted */}
-            {getAttackUsesRemaining(1) === 0 && getAttackUsesRemaining(2) === 0 && (
-              <div className="text-xs text-green-600 text-center mb-2 font-medium animate-pulse">
-                ✨ Attacks reset! Both available again.
+            {/* Show usage count for reference */}
+            {(getAttackUsesCount(1) > 0 || getAttackUsesCount(2) > 0) && (
+              <div className="text-xs text-blue-600 text-center mb-2 font-medium">
+                ♻️ Cards can be reused indefinitely!
               </div>
             )}
             
             <button
               className={`w-full p-2 rounded text-left text-sm transition-colors ${
-                isAttackDisabled(1) 
+                isAttackDisabled() 
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                   : 'bg-blue-100 hover:bg-blue-200 text-blue-800'
               }`}
               onClick={() => handleAttackSelect(1)}
-              disabled={isAttackDisabled(1)}
+              disabled={isAttackDisabled()}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1 pr-2">
@@ -262,20 +255,20 @@ const CardComponent: React.FC<CardProps> = ({
                     {card.attack1.description}
                   </div>
                 </div>
-                <div className={`text-xs font-bold flex-shrink-0 ${isAttackDisabled(1) ? 'text-red-500' : 'text-green-600'}`}>
-                  {getAttackUsesRemaining(1)}/2
+                <div className="text-xs font-bold flex-shrink-0 text-blue-600">
+                  {getAttackUsesCount(1)}x
                 </div>
               </div>
             </button>
             
             <button
               className={`w-full p-2 rounded text-left text-sm transition-colors ${
-                isAttackDisabled(2) 
+                isAttackDisabled() 
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                   : 'bg-blue-100 hover:bg-blue-200 text-blue-800'
               }`}
               onClick={() => handleAttackSelect(2)}
-              disabled={isAttackDisabled(2)}
+              disabled={isAttackDisabled()}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1 pr-2">
@@ -285,8 +278,8 @@ const CardComponent: React.FC<CardProps> = ({
                     {card.attack2.description}
                   </div>
                 </div>
-                <div className={`text-xs font-bold flex-shrink-0 ${isAttackDisabled(2) ? 'text-red-500' : 'text-green-600'}`}>
-                  {getAttackUsesRemaining(2)}/2
+                <div className="text-xs font-bold flex-shrink-0 text-blue-600">
+                  {getAttackUsesCount(2)}x
                 </div>
               </div>
             </button>

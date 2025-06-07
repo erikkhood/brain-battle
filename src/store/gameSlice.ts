@@ -508,12 +508,7 @@ const gameSlice = createSlice({
         return;
       }
 
-      // Check attack usage limit
-      const currentUsage = selectedAttack === 1 ? cardInState.attackUsage.attack1 : cardInState.attackUsage.attack2;
-      if (currentUsage >= 2) {
-        console.warn('Attack usage limit reached');
-        return; // Don't allow the attack
-      }
+      // No attack usage limits - cards can be used indefinitely as long as they're alive
 
       // If there are any active effects from action cards played this turn, return early
       if (state.activeEffects.lastActionType === 'action') {
@@ -557,16 +552,11 @@ const gameSlice = createSlice({
         }
       }
 
-      // Update attack usage counter
+      // Track usage for display purposes only (no limits)
       if (selectedAttack === 1) {
         cardInState.attackUsage.attack1++;
       } else {
         cardInState.attackUsage.attack2++;
-      }
-
-      // Reset attack usage if both attacks have been used twice
-      if (cardInState.attackUsage.attack1 >= 2 && cardInState.attackUsage.attack2 >= 2) {
-        cardInState.attackUsage = { attack1: 0, attack2: 0 };
       }
 
       // Apply the attack effects based on target
